@@ -18,7 +18,7 @@ class Results():
 
         self.freq = str(s.dt*24) + 'H'
         self.timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-        self.figdir = 'figures/'
+        self.figdir = f'model_output/{self.s.setup_name}/figures/'   # want output to look like model-output/mid-Maryland/figure-name.pdf
         if not os.path.exists(self.figdir):
             os.makedirs(self.figdir)
 
@@ -41,7 +41,7 @@ class Results():
                                 expand_data[nd][comp].quantile(.95, axis = 1), alpha =.3)
         fig.autofmt_xdate()
         if not self.s.interactive:
-            plt.savefig(f'{self.figdir}{self.s.setup_name}_{comp}_per_node{self.timestamp}.pdf')
+            plt.savefig(f'{self.figdir}/{self.s.setup_name}_{comp}_per_node{self.timestamp}.pdf')
 
 
         q50 = pd.DataFrame(index = pd.date_range(self.ti, self.tf, freq = self.freq), columns = np.arange(self.s.nnodes))
@@ -58,9 +58,9 @@ class Results():
         ax.fill_between(q50.index, q05.sum(axis=1), q95.sum(axis=1), alpha =.3)
         fig.autofmt_xdate()
         if not self.s.interactive:
-            plt.savefig(f'{self.figdir}{self.s.setup_name}_{comp}_all_nodes{self.timestamp}.pdf')
+            plt.savefig(f'{self.figdir}/{self.s.setup_name}_{comp}_all_nodes{self.timestamp}.pdf')
 
-
+            
     def build_comp_data(self):
         """ Very long"""
         
@@ -102,7 +102,7 @@ class Results():
         """ 
         This is very ugly...
         """
-        self.datadir = f'{self.s.setup_name}_model_output{self.timestamp}/'
+       self.datadir = f'model_output/{self.s.setup_name}/{self.s.setup_name}_{self.timestamp}/'
         if not os.path.exists(self.datadir):
             os.makedirs(self.datadir)
 
@@ -131,7 +131,7 @@ class Results():
             out_df['comp'].replace(R,     'R', inplace=True)
             out_df['comp'].replace(cumI,  'cumI', inplace=True)
             out_df['comp'].replace(ncomp, 'diffI', inplace=True)
-            if self.s.write_csv: out_df.to_csv(f"{self.datadir}sim_{s}_scn_{self.s.setup_name}.csv", index='time', index_label='time')
+            if self.s.write_csv: out_df.to_csv(f"{self.datadir}{self.s.setup_name}_sim_{s}_scn.csv", index='time', index_label='time')
             sims.append(out_df)
             
         return sims
@@ -150,7 +150,7 @@ class Results():
         fig.autofmt_xdate()
         
         if not self.s.interactive:
-            plt.savefig(f'{self.figdir}{self.s.setup_name}_{comp}_selected{self.timestamp}.pdf')
+            plt.savefig(f'{self.figdir}/{self.s.setup_name}_{comp}_selected{self.timestamp}.pdf')
         
         return fig, axes
 
@@ -170,7 +170,7 @@ class Results():
         ax.legend()
         fig.autofmt_xdate()
         if not self.s.interactive:
-            plt.savefig(f'{self.figdir}{self.s.setup_name}_allcomp_selected{self.timestamp}.pdf')
+            plt.savefig(f'{self.figdir}/{self.s.setup_name}_allcomp_selected{self.timestamp}.pdf')
         return fig, axes
         
     def plot_comp_mult(self, comp, nodes):
@@ -186,5 +186,5 @@ class Results():
             fig.autofmt_xdate()
 
         if not self.s.interactive:
-            plt.savefig(f'{self.figdir}{self.s.setup_name}_{comp}2_selected{self.timestamp}.pdf')
+           plt.savefig(f'{self.figdir}/{self.s.setup_name}_{comp}2_selected{self.timestamp}.pdf')
         return fig, axes
